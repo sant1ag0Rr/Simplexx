@@ -31,8 +31,27 @@ Plataforma integral de gestión académica para instituciones educativas con mó
 - Data validation
 
 ## 🚀 Instalación
-```bash
 git clone https://github.com/tu-usuario/simplex.git
 cd simplex
 npm install
 npm start
+
+## 📂 Estructura del Proyecto
+
+src/
+├── components/         # Componentes reutilizables
+│   ├── Auth/           # Componentes de autenticación
+│   ├── Admin/          # Panel administrativo
+│   ├── Foro/           # Componentes del foro académico
+│   └── Shared/         # Componentes compartidos
+├── context/            # Contextos de React
+│   └── AuthContext.js  # Contexto de autenticación
+├── mock/               # Datos simulados
+│   ├── api.js          # Funciones de API mock
+│   └── data/           # Datos estáticos  
+├── services/           # Lógica de servicios
+│   └── apiService.js   # Servicios API
+├── styles/             # Estilos globales
+│   └── global.css      # Estilos base
+└── utils/              # Utilidades
+    └── helpers.js      # Funciones helper
