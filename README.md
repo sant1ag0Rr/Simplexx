@@ -32,12 +32,13 @@ Plataforma integral de gestión académica para instituciones educativas con mó
 
 ## 🚀 Instalación
 git clone https://github.com/tu-usuario/simplex.git
+```bash
 cd simplex
 npm install
 npm start
 
 ## 📂 Estructura del Proyecto
-
+```bash
 src/
 ├── components/         # Componentes reutilizables
 │   ├── Auth/           # Componentes de autenticación
