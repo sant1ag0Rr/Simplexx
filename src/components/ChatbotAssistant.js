@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UDEM_INFO } from '../mock/udemData';
 import { callOpenAI } from '../services/openaiService';
+import styles from './ChatbotAssistant.module.css';
 
 const ChatbotAssistant = () => {
   const [query, setQuery] = useState('');
@@ -72,42 +73,42 @@ const ChatbotAssistant = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-      <div className="p-6 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-        <h2 className="text-2xl font-bold">Asistente UdeM</h2>
-        <p className="text-blue-100">Pregunta sobre programas, fechas y trámites</p>
+    <div className={styles.chatbotContainer}>
+      <div className={styles.chatbotHeader}>
+        <h2 className={styles.chatbotTitle}>Asistente UdeM</h2>
+        <p className={styles.chatbotSubtitle}>Pregunta sobre programas, fechas y trámites</p>
       </div>
       
-      <div className="p-6 h-96 overflow-y-auto">
+      <div className={styles.chatArea}>
         {conversation.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center text-gray-500">
-              <p>¡Hola! Soy el asistente de la Universidad de Medellín.</p>
-              <p>Pregúntame sobre:</p>
-              <ul className="list-disc list-inside mt-2 text-sm">
-                <li>Programas académicos</li>
-                <li>Fechas de inscripción</li>
-                <li>Información de contacto</li>
-              </ul>
-            </div>
+          <div className={styles.emptyState}>
+            <p>¡Hola! Soy el asistente de la Universidad de Medellín.</p>
+            <p>Pregúntame sobre:</p>
+            <ul>
+              <li>Programas académicos</li>
+              <li>Fechas de inscripción</li>
+              <li>Información de contacto</li>
+            </ul>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div>
             {conversation.map((msg, index) => (
               <div 
                 key={index} 
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`${styles.messageContainer} ${
+                  msg.role === 'user' ? styles.userMessage : styles.assistantMessage
+                }`}
               >
                 <div 
-                  className={`max-w-xs md:max-w-md lg:max-w-lg rounded-lg p-4 whitespace-pre-line ${
-                    msg.role === 'user' 
-                      ? 'bg-blue-100 text-blue-900' 
-                      : 'bg-gray-100 text-gray-800'
+                  className={`${styles.messageBubble} ${
+                    msg.role === 'user' ? styles.userBubble : styles.assistantBubble
                   }`}
                 >
                   {msg.content}
                   {msg.source && (
-                    <div className="mt-1 text-xs text-gray-500">
+                    <div className={`${styles.messageSource} ${
+                      msg.source === 'local' ? styles.localSource : styles.aiSource
+                    }`}>
                       Fuente: {msg.source === 'local' ? 'Base de datos UdeM' : 'GPT-3.5 Turbo'}
                     </div>
                   )}
@@ -115,12 +116,12 @@ const ChatbotAssistant = () => {
               </div>
             ))}
             {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-gray-100 text-gray-800 rounded-lg p-4 max-w-xs">
-                  <div className="flex space-x-2">
-                    <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"></div>
-                    <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce delay-100"></div>
-                    <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce delay-200"></div>
+              <div className={styles.loadingIndicator}>
+                <div className={styles.loadingBubble}>
+                  <div className={styles.loadingDots}>
+                    <div className={styles.loadingDot}></div>
+                    <div className={styles.loadingDot}></div>
+                    <div className={styles.loadingDot}></div>
                   </div>
                 </div>
               </div>
@@ -129,32 +130,28 @@ const ChatbotAssistant = () => {
         )}
       </div>
       
-      <div className="p-4 border-t border-gray-200">
-        <form onSubmit={handleSubmit}>
-          <div className="flex space-x-2">
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ej: ¿Qué programas ofrece la UdeM?"
-              className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              disabled={isLoading}
-            />
-            <button
-              type="submit"
-              disabled={isLoading || !query.trim()}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition"
-            >
-              {isLoading ? 'Enviando...' : 'Enviar'}
-            </button>
-          </div>
-          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      <div className={styles.inputArea}>
+        <form onSubmit={handleSubmit} className={styles.inputForm}>
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Ej: ¿Qué programas ofrece la UdeM?"
+            className={styles.chatInput}
+            disabled={isLoading}
+          />
+          <button
+            type="submit"
+            disabled={isLoading || !query.trim()}
+            className={styles.submitButton}
+          >
+            {isLoading ? 'Enviando...' : 'Enviar'}
+          </button>
         </form>
+        {error && <div className={styles.errorMessage}>{error}</div>}
       </div>
     </div>
   );
 };
 
 export default ChatbotAssistant;
-
-// DONE

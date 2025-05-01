@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import styles from './Login.module.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -26,35 +27,38 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Bienvenido a Simplex inicia sesión</h2>
+    <div className={styles.loginContainer}>
+      <div className={styles.loginCard}>
+        <div className={styles.loginHeader}>
+          <h1 className={styles.loginTitle}>Bienvenido a Simplex</h1>
+          <p className={styles.loginSubtitle}>Inicia sesión para continuar</p>
+        </div>
         
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+          <div className={styles.errorMessage}>
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Correo Electrónico</label>
+        <form onSubmit={handleSubmit} className={styles.loginForm}>
+          <div className={styles.inputGroup}>
+            <label className={styles.inputLabel}>Correo Electrónico</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border rounded"
+              className={styles.inputField}
               required
             />
           </div>
           
-          <div className="mb-6">
-            <label className="block text-gray-700 mb-2">Contraseña</label>
+          <div className={styles.inputGroup}>
+            <label className={styles.inputLabel}>Contraseña</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border rounded"
+              className={styles.inputField}
               required
             />
           </div>
@@ -62,11 +66,13 @@ const Login = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-2 px-4 rounded text-white ${
-              isLoading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'
-            }`}
+            className={styles.submitButton}
           >
-            {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+            {isLoading ? (
+              <span>Iniciando sesión...</span>
+            ) : (
+              <span>Iniciar Sesión</span>
+            )}
           </button>
         </form>
       </div>

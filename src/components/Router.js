@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import Login from './Login';
 import MainLayout from './MainLayout';
-import AdminPanel from './AdminPanel';
+import AdminPanel from './AdminPanel'; // Importa desde la carpeta
 
 const Router = () => {
   const { user, isAuthenticated } = useContext(AuthContext);

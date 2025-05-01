@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MOCK_SOLICITUDES_ADMIN } from '../mock/solicitudesAdmin';
+import styles from './AdminSolicitudesManager.module.css';
 
 const AdminSolicitudesManager = () => {
   const [solicitudes, setSolicitudes] = useState(MOCK_SOLICITUDES_ADMIN);
@@ -20,85 +21,99 @@ const AdminSolicitudesManager = () => {
     ));
   };
 
+  const solicitudesFiltradas = filtrarSolicitudes();
+
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-md p-6">
-        <h2 className="text-2xl font-bold mb-6">Gestión de Solicitudes</h2>
+    <div className={styles.adminContainer}>
+      <div className={styles.adminPanel}>
+        <div className={styles.panelHeader}>
+          <h2 className={styles.panelTitle}>Gestión de Solicitudes</h2>
+        </div>
         
-        <div className="flex space-x-4 mb-6">
-          <select 
-            value={filtro.estado}
-            onChange={(e) => setFiltro({...filtro, estado: e.target.value})}
-            className="w-full p-3 border rounded-lg"
-          >
-            <option value="">Todos los Estados</option>
-            <option value="En Revisión">En Revisión</option>
-            <option value="Pendiente">Pendiente</option>
-            <option value="Aprobado">Aprobado</option>
-            <option value="Rechazado">Rechazado</option>
-          </select>
+        <div className={styles.filterContainer}>
+          <div className={styles.filterRow}>
+            <select 
+              value={filtro.estado}
+              onChange={(e) => setFiltro({...filtro, estado: e.target.value})}
+              className={`${styles.filterInput} ${styles.filterSelect}`}
+            >
+              <option value="">Todos los Estados</option>
+              <option value="En Revisión">En Revisión</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Aprobado">Aprobado</option>
+              <option value="Rechazado">Rechazado</option>
+            </select>
 
-          <select 
-            value={filtro.tipo}
-            onChange={(e) => setFiltro({...filtro, tipo: e.target.value})}
-            className="w-full p-3 border rounded-lg"
-          >
-            <option value="">Todos los Tipos</option>
-            <option value="Cambio de Carrera">Cambio de Carrera</option>
-            <option value="Inscripción de Curso">Inscripción de Curso</option>
-          </select>
-
+            <select 
+              value={filtro.tipo}
+              onChange={(e) => setFiltro({...filtro, tipo: e.target.value})}
+              className={`${styles.filterInput} ${styles.filterSelect}`}
+            >
+              <option value="">Todos los Tipos</option>
+              <option value="Cambio de Carrera">Cambio de Carrera</option>
+              <option value="Inscripción de Curso">Inscripción de Curso</option>
+            </select>
+          </div>
+          
           <input 
             type="text"
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            placeholder="Buscar por estudiante"
-            className="w-full p-3 border rounded-lg"
+            placeholder="Buscar por estudiante..."
+            className={styles.filterInput}
           />
         </div>
 
-        {filtrarSolicitudes().map(solicitud => (
-          <div 
-            key={solicitud.id} 
-            className="bg-gray-50 p-4 rounded-lg mb-3 border flex justify-between items-center"
-          >
-            <div>
-              <div className="flex items-center mb-2">
-                <h3 className="font-bold mr-4">{solicitud.estudiante}</h3>
-                <span 
-                  className={`px-3 py-1 rounded-full text-sm ${
+        <div className={styles.requestsList}>
+          {solicitudesFiltradas.length > 0 ? (
+            solicitudesFiltradas.map(solicitud => (
+              <div key={solicitud.id} className={styles.requestCard}>
+                <div className={styles.requestHeader}>
+                  <h3 className={styles.studentName}>{solicitud.estudiante}</h3>
+                  <span className={`${styles.requestStatus} ${
                     solicitud.estado === 'Aprobado' 
-                      ? 'bg-green-100 text-green-800' 
+                      ? styles.statusApproved
                       : solicitud.estado === 'En Revisión'
-                      ? 'bg-yellow-100 text-yellow-800'
+                      ? styles.statusReview
                       : solicitud.estado === 'Pendiente'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  {solicitud.estado}
-                </span>
+                      ? styles.statusPending
+                      : styles.statusRejected
+                  }`}>
+                    {solicitud.estado}
+                  </span>
+                </div>
+                
+                <div className={styles.requestMeta}>
+                  <span className={styles.requestType}>{solicitud.tipo}</span>
+                  <span className={styles.requestDate}>{solicitud.fecha}</span>
+                </div>
+                
+                <p className={styles.requestDescription}>{solicitud.descripcion}</p>
+                
+                <div className={styles.requestActions}>
+                  <button 
+                    onClick={() => cambiarEstado(solicitud.id, 'Aprobado')}
+                    className={`${styles.actionButton} ${styles.approveButton}`}
+                  >
+                    <span>Aprobar</span>
+                  </button>
+                  <button 
+                    onClick={() => cambiarEstado(solicitud.id, 'Rechazado')}
+                    className={`${styles.actionButton} ${styles.rejectButton}`}
+                  >
+                    <span>Rechazar</span>
+                  </button>
+                </div>
               </div>
-              <p className="text-gray-600">{solicitud.tipo}</p>
-              <p className="text-sm text-gray-500">{solicitud.descripcion}</p>
-              <span className="text-xs text-gray-400">{solicitud.fecha}</span>
+            ))
+          ) : (
+            <div className={styles.emptyState}>
+              <div className={styles.emptyStateIcon}>📭</div>
+              <h3>No se encontraron solicitudes</h3>
+              <p>Intenta con otros criterios de búsqueda</p>
             </div>
-            <div className="flex space-x-2">
-              <button 
-                onClick={() => cambiarEstado(solicitud.id, 'Aprobado')}
-                className="bg-green-500 text-white px-3 py-2 rounded-lg hover:bg-green-600"
-              >
-                Aprobar
-              </button>
-              <button 
-                onClick={() => cambiarEstado(solicitud.id, 'Rechazado')}
-                className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600"
-              >
-                Rechazar
-              </button>
-            </div>
-          </div>
-        ))}
+          )}
+        </div>
       </div>
     </div>
   );
