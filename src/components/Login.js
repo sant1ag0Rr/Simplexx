@@ -30,7 +30,7 @@ const Login = () => {
     <div className={styles.loginContainer}>
       <div className={styles.loginCard}>
         <div className={styles.loginHeader}>
-          <h1 className={styles.loginTitle}>Bienvenido a Simplex</h1>
+          <h1 className={styles.loginTitle}>Bienvenido a la Universidad de Medellín</h1>
           <p className={styles.loginSubtitle}>Inicia sesión para continuar</p>
         </div>
         

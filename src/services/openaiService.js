@@ -1,43 +1,65 @@
-const callOpenAI = async (query, context) => {
-  const API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
-  
+// En services/geminiService.js
+const callGemini = async (query, context) => {
+  // Verificación mejorada de API Key
+  if (!process.env.REACT_APP_GEMINI_API_KEY) {
+    console.error('Error: API Key no configurada');
+    return {
+      content: "Disculpa, el servicio no está configurado correctamente. Por favor contacta al soporte técnico.",
+      error: true
+    };
+  }
+
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: `Eres un asistente virtual especializado de la Universidad de Medellín. 
-            Contexto: ${JSON.stringify(context)}
-            Responde de manera concisa y profesional solo sobre temas relacionados con la universidad.
-            Si no sabes algo, di "No tengo esa información específica, te recomiendo contactar 
-            a la universidad directamente en ${context.contactos.sitioWeb}"`
-          },
-          {
-            role: "user",
-            content: query
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.REACT_APP_GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: `Eres un asistente de ${context.nombreUniversidad}. 
+              Información institucional: ${JSON.stringify(context, null, 2)}
+              Responde únicamente sobre temas universitarios.`
+            }, {
+              text: query
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.3,
+            maxOutputTokens: 500
           }
-        ],
-        temperature: 0.7,
-        max_tokens: 500
-      })
-    });
+        })
+      }
+    );
 
     if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`);
+      throw new Error(`Error ${response.status}: ${await response.text()}`);
     }
 
-    return await response.json();
+    const data = await response.json();
+    return {
+      content: data.candidates[0].content.parts[0].text,
+      error: false
+    };
+    
   } catch (error) {
-    console.error('Error en callOpenAI:', error);
-    throw error;
+    console.error('Error en callGemini:', error);
+    
+    // Respuesta local de respaldo
+    const localResponse = handleLocalQuery(query);
+    if (localResponse) {
+      return {
+        content: localResponse.answer,
+        error: false
+      };
+    }
+    
+    return {
+      content: "Disculpa, estoy teniendo dificultades técnicas. Aquí tienes información útil:\n\n" +
+               `- Programas: ${context.programas.slice(0, 3).map(p => p.nombre).join(', ')}...\n` +
+               `- Contacto: ${context.contactos.telefonos.admisiones}`,
+      error: true
+    };
   }
 };
-
-export { callOpenAI };

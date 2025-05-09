@@ -34,7 +34,7 @@
   /* Header */
   .managerHeader {
     padding: 1.5rem;
-    background: linear-gradient(135deg, #00b09b, #96c93d);
+    background: linear-gradient(135deg, #db0707, #db0707);
     color: white;
     position: relative;
     overflow: hidden;
@@ -83,9 +83,9 @@
   
   .activeCategory {
     background: rgba(255, 255, 255, 0.9);
-    color: #00b09b;
+    color: #04000a;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: #00b09b;
+    border-color: #db0707;
   }
   
   .inactiveCategory {
@@ -108,8 +108,8 @@
   
   .successMessage {
     background: rgba(40, 167, 69, 0.1);
-    color: #28a745;
-    border-left: 4px solid #28a745;
+    color: #04000a;
+    border-left: 4px solid #04000a;
   }
   
   .errorMessage {
@@ -145,7 +145,7 @@
   .requestCard:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    border-color: #00b09b;
+    border-color: #db0707;
   }
   
   .requestTitle {
@@ -196,7 +196,7 @@
   }
   
   .formTextarea:focus {
-    border-color: #00b09b;
+    border-color: #db0707;
     box-shadow: 0 0 0 3px rgba(0, 176, 155, 0.2);
     outline: none;
   }
@@ -226,7 +226,7 @@
   .submitButton {
     flex: 1;
     padding: 0.8rem;
-    background: linear-gradient(135deg, #00b09b, #96c93d);
+    background: linear-gradient(135deg, #db0707, #db0707);
     color: white;
     border: none;
     border-radius: 12px;

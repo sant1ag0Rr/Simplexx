@@ -34,7 +34,7 @@
   /* Header */
   .foroHeader {
     padding: 1.5rem;
-    background: linear-gradient(135deg, #8e2de2, #4a00e0);
+    background: linear-gradient(135deg, #db0707, #db0707);
     color: white;
     position: relative;
     overflow: hidden;
@@ -84,7 +84,7 @@
     font-size: 1.2rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    color: #4a00e0;
+    color: #04000a;
   }
   
   .inputField {
@@ -98,7 +98,7 @@
   }
   
   .inputField:focus {
-    border-color: #8e2de2;
+    border-color: #db0707;
     box-shadow: 0 0 0 3px rgba(142, 45, 226, 0.2);
     outline: none;
   }
@@ -110,7 +110,7 @@
   
   .submitButton {
     padding: 0.8rem 1.5rem;
-    background: linear-gradient(135deg, #8e2de2, #4a00e0);
+    background: linear-gradient(135deg, #db0707, #db0707);
     color: white;
     border: none;
     border-radius: 12px;
@@ -187,7 +187,7 @@
   }
   
   .commentContent {
-    color: #34495e;
+    color: #04000a;
     line-height: 1.5;
   }
   
@@ -208,14 +208,14 @@
   }
   
   .commentInput:focus {
-    border-color: #8e2de2;
+    border-color: #db0707;
     box-shadow: 0 0 0 3px rgba(142, 45, 226, 0.2);
     outline: none;
   }
   
   .commentButton {
     padding: 0 1.2rem;
-    background: linear-gradient(135deg, #8e2de2, #4a00e0);
+    background: linear-gradient(135deg, #db0707, #db0707);
     color: white;
     border: none;
     border-radius: 12px;

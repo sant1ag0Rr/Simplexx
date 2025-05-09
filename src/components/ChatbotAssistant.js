@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UDEM_INFO } from '../mock/udemData';
 import { callOpenAI } from '../services/openaiService';
+import { searchUdemInfo, searchLocalData } from '../api/apiService';
 import styles from './ChatbotAssistant.module.css';
 
 const ChatbotAssistant = () => {
@@ -9,28 +10,6 @@ const ChatbotAssistant = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleLocalQuery = (question) => {
-    const questionLower = question.toLowerCase();
-    
-    if (questionLower.includes('programa') || questionLower.includes('carrera')) {
-      return {
-        answer: `Programas disponibles:\n${UDEM_INFO.programas.map(p => 
-          `• ${p.nombre} (${p.facultad}) - ${p.duracion}`
-        ).join('\n')}`,
-        source: 'local'
-      };
-    }
-    
-    if (questionLower.includes('inscripción') || questionLower.includes('matrícula')) {
-      return {
-        answer: `Fechas importantes:\n• Inscripciones: ${UDEM_INFO.fechasImportantes.inscripciones}\n• Matrícula: ${UDEM_INFO.fechasImportantes.matriculaFinanciera}\n• Clases: ${UDEM_INFO.fechasImportantes.inicioClases}`,
-        source: 'local'
-      };
-    }
-    
-    return null;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!query.trim()) return;
@@ -38,38 +17,67 @@ const ChatbotAssistant = () => {
     setIsLoading(true);
     setError(null);
     
-    const userMessage = { role: 'user', content: query };
-    setConversation(prev => [...prev, userMessage]);
-    
+    // Agregar mensaje del usuario
+    setConversation(prev => [...prev, {
+      role: 'user',
+      content: query
+    }]);
+
     try {
-      const localResponse = handleLocalQuery(query);
+      // 1. Primero buscar en datos locales
+      const localResult = searchLocalData(query, UDEM_INFO);
       
-      if (localResponse) {
-        setConversation(prev => [...prev, { 
-          role: 'assistant', 
-          content: localResponse.answer,
-          source: localResponse.source
-        }]);
+      if (localResult) {
+        setConversation(prev => [...prev, formatAssistantMessage(localResult)]);
         setQuery('');
         return;
       }
+
+      // 2. Si no hay resultados locales, buscar en la API
+      const apiResult = await searchUdemInfo(query);
       
-      const response = await callOpenAI(query, UDEM_INFO);
-      const aiAnswer = response.choices[0].message.content;
-      
-      setConversation(prev => [...prev, { 
-        role: 'assistant', 
-        content: aiAnswer,
-        source: 'AI'
-      }]);
+      if (apiResult.success) {
+        if (apiResult.results.length > 0) {
+          setConversation(prev => [...prev, formatAssistantMessage(apiResult)]);
+        } else {
+          // 3. Si no hay resultados en la API, usar IA generativa
+          const aiResponse = await callOpenAI(query, UDEM_INFO);
+          setConversation(prev => [...prev, {
+            role: 'assistant',
+            content: aiResponse.choices[0].message.content,
+            source: 'AI'
+          }]);
+        }
+      } else {
+        setError(apiResult.error);
+      }
       
     } catch (err) {
-      setError('Error al conectar con el servicio. Verifica tu conexión o API key.');
-      console.error('API Error:', err);
+      setError('Error inesperado al procesar tu solicitud');
+      console.error('Error:', err);
     } finally {
       setIsLoading(false);
       setQuery('');
     }
+  };
+
+  // Función para formatear mensajes del asistente
+  const formatAssistantMessage = ({ source, results }) => {
+    return {
+      role: 'assistant',
+      content: results.length > 0 
+        ? `🔍 Esto encontré (${source}):\n\n${formatResults(results)}`
+        : `No encontré resultados en ${source}`,
+      source,
+      isSearchResult: results.length > 0
+    };
+  };
+
+  // Función para formatear resultados
+  const formatResults = (results) => {
+    return results.map(item => 
+      `• **${item.titulo}**\n${item.contenido}\n${item.url ? `Más info: ${item.url}` : ''}`
+    ).join('\n\n');
   };
 
   return (
@@ -88,6 +96,7 @@ const ChatbotAssistant = () => {
               <li>Programas académicos</li>
               <li>Fechas de inscripción</li>
               <li>Información de contacto</li>
+              <li>Cualquier información de la UdeM</li>
             </ul>
           </div>
         ) : (
@@ -104,12 +113,18 @@ const ChatbotAssistant = () => {
                     msg.role === 'user' ? styles.userBubble : styles.assistantBubble
                   }`}
                 >
-                  {msg.content}
+                  {msg.content.split('\n').map((paragraph, i) => (
+                    <p key={i}>{paragraph}</p>
+                  ))}
                   {msg.source && (
                     <div className={`${styles.messageSource} ${
-                      msg.source === 'local' ? styles.localSource : styles.aiSource
+                      msg.source === 'Base de datos local' ? styles.localSource : 
+                      msg.source === 'UDEM API' ? styles.webSource : styles.aiSource
                     }`}>
-                      Fuente: {msg.source === 'local' ? 'Base de datos UdeM' : 'GPT-3.5 Turbo'}
+                      Fuente: {
+                        msg.source === 'Base de datos local' ? 'Base de datos UdeM' : 
+                        msg.source === 'UDEM API' ? 'Sitio web UdeM' : 'GPT-3.5 Turbo'
+                      }
                     </div>
                   )}
                 </div>

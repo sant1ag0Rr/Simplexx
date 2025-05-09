@@ -1,155 +1,142 @@
-/* Animaciones */
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-  
-  @keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  
-  /* Estilos base */
-  .loginContainer {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
-    background-color: #f4f6f9;
-  }
-  
-  .loginCard {
-    width: 100%;
-    max-width: 420px;
-    padding: 2.5rem;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    transform: perspective(1000px);
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-  
-  .loginCard:hover {
-    transform: perspective(1000px) translateY(-5px) rotateX(2deg);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-  }
-  
-  .loginHeader {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  .loginTitle {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: float 3s ease-in-out infinite;
-  }
-  
-  .loginSubtitle {
-    color: #7f8c8d;
-    font-size: 0.9rem;
-  }
-  
-  /* Formulario */
-  .loginForm {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  
-  .inputGroup {
-    position: relative;
-  }
-  
-  .inputLabel {
-    position: absolute;
-    top: -10px;
-    left: 15px;
-    background: white;
-    padding: 0 5px;
-    font-size: 0.8rem;
-    color: #3498db;
-  }
-  
-  .inputField {
-    width: 100%;
-    padding: 15px;
-    border: 2px solid #e0e0e0;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-  }
-  
-  .inputField:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-    outline: none;
-  }
-  
-  /* Botón */
-  .submitButton {
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .submitButton:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  .submitButton:disabled {
-    background: #bdc3c7;
-    cursor: not-allowed;
-    transform: none !important;
-  }
-  
-  .submitButton::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -60%;
-    width: 200%;
-    height: 200%;
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(30deg);
-    transition: all 0.3s;
-  }
-  
-  .submitButton:hover::after {
-    left: 100%;
-  }
-  
-  /* Error */
-  .errorMessage {
-    padding: 12px;
-    background: rgba(231, 76, 60, 0.1);
-    color: #e74c3c;
-    border-radius: 8px;
-    border-left: 4px solid #e74c3c;
-    animation: shake 0.5s ease-in-out;
-  }
-  
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-5px); }
-    40%, 80% { transform: translateX(5px); }
-  }
-  
+/* ---------- Animaciones (sin cambios) ---------- */
+@keyframes float   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+@keyframes gradientBG {0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+@keyframes shake   {0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+
+/* ---------- Colores base ---------- */
+:root{
+  --udem-red:      #af0d24;   /* rojo institucional principal */
+  --udem-red-dark: #8f0b1d;   /* rojo más oscuro para hover */
+  --panel-bg:      #f4efec;   /* fondo crema/gris muy claro del panel */
+  --text-dark:     #111;      /* textos principales */
+  --text-muted:    #6e6e6e;   /* textos secundarios */
+  --border-input:  #d4d4d4;   /* borde gris input */
+}
+
+/* ---------- Layout ---------- */
+.loginContainer{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background-color:var(--udem-red-dark);   /* fondo rojo oscuro */
+  /* la textura la puedes activar cuando la tengas */
+}
+
+.loginCard{
+  width:100%;
+  max-width:420px;
+  padding:2.5rem;
+  background:var(--panel-bg);
+  border-radius:8px;
+  box-shadow:0 8px 25px rgba(0,0,0,.25);
+  backdrop-filter:blur(6px);
+  transition:.4s;
+}
+
+.loginCard:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(0,0,0,.28);
+}
+
+/* ---------- Encabezado ---------- */
+.loginHeader{ text-align:center;margin-bottom:2rem }
+
+.loginTitle{
+  font-size:1.6rem;
+  font-weight:700;
+  margin-bottom:.3rem;
+  color:var(--udem-red);
+}
+
+.loginSubtitle{
+  color:var(--text-muted);
+  font-size:.9rem;
+}
+
+/* ---------- Formulario ---------- */
+.loginForm{ display:flex;flex-direction:column;gap:1.5rem }
+
+.inputGroup{ position:relative }
+
+.inputLabel{
+  position:absolute;top:-10px;left:15px;
+  background:var(--panel-bg);
+  padding:0 5px;
+  font-size:.8rem;
+  color:var(--udem-red);
+}
+
+.inputField{
+  width:100%;padding:14px;
+  border:2px solid var(--border-input);
+  border-radius:6px;
+  font-size:1rem;
+  transition:border .25s,box-shadow .25s;
+}
+
+.inputField:focus{
+  border-color:var(--udem-red);
+  box-shadow:0 0 0 2px rgba(175,13,36,.25);
+  outline:none;
+}
+
+/* ---------- Botón ---------- */
+.submitButton{
+  padding:14px;
+  border:none;
+  border-radius:6px;
+  background:var(--udem-red);
+  color:#fff;
+  font-size:1rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:background .25s,transform .25s,box-shadow .25s;
+  position:relative;
+  overflow:hidden;
+}
+
+.submitButton:hover{
+  background:var(--udem-red-dark);
+  transform:translateY(-2px);
+  box-shadow:0 6px 16px rgba(0,0,0,.18);
+}
+
+.submitButton:disabled{
+  background:#c5c5c5;
+  cursor:not-allowed;
+  box-shadow:none;
+  transform:none!important;
+}
+
+.submitButton::after{
+  content:'';
+  position:absolute;
+  top:-50%;left:-60%;
+  width:200%;height:200%;
+  background:rgba(255,255,255,.15);
+  transform:rotate(30deg);
+  transition:left .3s;
+}
+.submitButton:hover::after{ left:100% }
+
+/* ---------- Mensaje de error ---------- */
+.errorMessage{
+  padding:12px;
+  background:rgba(175,13,36,.08);
+  color:var(--udem-red);
+  border-radius:6px;
+  border-left:4px solid var(--udem-red);
+  animation:shake .5s;
+  text-align:center;
+}
+
+/* ---------- Olvidé contraseña ---------- */
+.forgotPassword{text-align:right;margin-top:-1rem}
+.forgotPassword a{
+  color:var(--text-muted);
+  font-size:.85rem;
+  text-decoration:none;
+  transition:color .25s
+}
+.forgotPassword a:hover{ color:var(--udem-red) }
